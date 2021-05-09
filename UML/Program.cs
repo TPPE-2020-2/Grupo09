@@ -57,20 +57,26 @@ namespace TPPE1
 
             sequenceDiagram.AddOptional("[SQLite]", "System identifies situation");
             sequenceDiagram.AddOptional("[Memory]", "System identifies situation");
+            
+            SequenceDiagram diagramThatWillReceiveMessage = sequenceDiagram.GetDiagram("System identifies situation");
 
-            sequenceDiagram.AddMessage("System identifies situation", "register", 0.999f, "Oxygenation", "Bus", Sequence.Message.MessageTypes.Reply);
-            sequenceDiagram.AddMessage("System identifies situation", "replyRegister", 0.999f, "Bus", "Oxygenation", Sequence.Message.MessageTypes.Reply);
-            sequenceDiagram.AddMessage("System identifies situation", "sendSituation", 0.999f, "Oxygenation", "Persistence", Sequence.Message.MessageTypes.Reply);
-            sequenceDiagram.AddMessage("System identifies situation", "persist", 0.999f, "Persistence", "SQLite", Sequence.Message.MessageTypes.Reply);
-            sequenceDiagram.AddMessage("System identifies situation", "replyPersist", 0.999f, "Persistence", "Oxygenation", Sequence.Message.MessageTypes.Reply);
-            sequenceDiagram.AddMessage("System identifies situation", "replySendSituation(Oxygenation)", 0.999f, "Oxygenation", "Bus", Sequence.Message.MessageTypes.Reply);
+            diagramThatWillReceiveMessage.AddMessage("register", 0.999f, "Oxygenation", "Bus", Sequence.Message.MessageTypes.Reply);
+            diagramThatWillReceiveMessage.AddMessage("replyRegister", 0.999f, "Bus", "Oxygenation", Sequence.Message.MessageTypes.Reply);
+            diagramThatWillReceiveMessage.AddMessage("sendSituation", 0.999f, "Oxygenation", "Persistence", Sequence.Message.MessageTypes.Reply);
+            diagramThatWillReceiveMessage.AddMessage("persist", 0.999f, "Persistence", "SQLite", Sequence.Message.MessageTypes.Reply);
+            diagramThatWillReceiveMessage.AddMessage("replyPersist", 0.999f, "Persistence", "Oxygenation", Sequence.Message.MessageTypes.Reply);
+            diagramThatWillReceiveMessage.AddMessage("replySendSituation(Oxygenation)", 0.999f, "Oxygenation", "Bus", Sequence.Message.MessageTypes.Reply);
 
-            sequenceDiagram.AddMessage("SQLite Persistence", "persist", 0.999f, "Persistence", "SQLite", Sequence.Message.MessageTypes.Reply);
-            sequenceDiagram.AddMessage("SQLite Persistence", "replyPersist", 0.999f, "SQLite", "Persistence", Sequence.Message.MessageTypes.Reply);
+            diagramThatWillReceiveMessage = sequenceDiagram.GetDiagram("SQLite Persistence");
 
-            sequenceDiagram.AddMessage("Memory Persistence", "persist", 0.999f, "Persistence", "Memory", Sequence.Message.MessageTypes.Reply);
-            sequenceDiagram.AddMessage("Memory Persistence", "replyPersist", 0.999f, "Memory", "Persistence", Sequence.Message.MessageTypes.Reply);
+            diagramThatWillReceiveMessage.AddMessage("persist", 0.999f, "Persistence", "SQLite", Sequence.Message.MessageTypes.Reply);
+            diagramThatWillReceiveMessage.AddMessage("replyPersist", 0.999f, "SQLite", "Persistence", Sequence.Message.MessageTypes.Reply);
 
+            diagramThatWillReceiveMessage = sequenceDiagram.GetDiagram("Memory Persistence");
+
+            diagramThatWillReceiveMessage.AddMessage("persist", 0.999f, "Persistence", "Memory", Sequence.Message.MessageTypes.Reply);
+            diagramThatWillReceiveMessage.AddMessage("replyPersist", 0.999f, "Memory", "Persistence", Sequence.Message.MessageTypes.Reply);
+           
             SaveXml(SEQUENCE_DIAGRAM_XML_FILE_NAME, sequenceDiagram.ToString());
         }
     }

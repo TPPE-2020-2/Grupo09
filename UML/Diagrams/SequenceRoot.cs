@@ -87,19 +87,7 @@ namespace TPPE1.Diagrams
             Diagrams.TryGetValue(name, out var sequence);
             return sequence;
         }
-
-        public void AddMessage(string diagram, string name, float prob, string source, string target, Message.MessageTypes messageType)
-        {
-            if (string.IsNullOrEmpty(diagram))
-                throw new MessageFormatException();
-
-            var sequenceDiagram = GetDiagram(diagram);
-            if (sequenceDiagram != null)
-            {
-                sequenceDiagram.AddMessage(name, prob, source, target, messageType);
-            }
-        }
-
+     
         public void AddOptional(string name, string diagram)
         {
             if (string.IsNullOrEmpty(name))

@@ -78,48 +78,69 @@ namespace TestProject
 
             Assert.Throws<ActivityRepresentationException>(() => sequenceDiagram.AddDiagram("System identifies situation", true));
         }
-
+           
         [Fact]
         public void ActivityDiagram_Add5_ActivityRepresentationExceptionTest2()
         {
             ActivityDiagram activityDiagram = new("nome do diagrama", true);
-        
+
             activityDiagram.AddStartNode("nome do nodo inicial");
             activityDiagram.AddActivityNode("System identifies situation");
             activityDiagram.AddActivityNode("SQLite Persistence");
             activityDiagram.AddDecisionNode("nome do nodo de decisao");
             activityDiagram.AddMergeNode("nome do nodo de fusao");
             activityDiagram.AddFinalNode("nome do nodo final");
-        
+
             activityDiagram.AddTransition("nome da transicao", 0.999f);
             activityDiagram.AddTransition("nome da transicao", 0.999f);
-        
+
             SequenceRoot sequenceDiagram = new SequenceRoot(activityDiagram);
-        
+
             sequenceDiagram.AddDiagram("System identifies situation", true);
-        
+
             sequenceDiagram.AddLifeline("Bus");
             sequenceDiagram.AddLifeline("Oxygenation");
             sequenceDiagram.AddLifeline("Persistence");
             sequenceDiagram.AddLifeline("SQLite");
             sequenceDiagram.AddLifeline("Memory");
-        
+
             sequenceDiagram.AddOptional("[SQLite]", "System identifies situation");
             sequenceDiagram.AddOptional("[Memory]", "System identifies situation");
-        
-            sequenceDiagram.AddMessage("System identifies situation", "register", 0.999f, "Oxygenation", "Bus", TPPE1.Sequence.Message.MessageTypes.Reply);
-            sequenceDiagram.AddMessage("System identifies situation", "replyRegister", 0.999f, "Bus", "Oxygenation", TPPE1.Sequence.Message.MessageTypes.Reply);
-            sequenceDiagram.AddMessage("System identifies situation", "sendSituation", 0.999f, "Oxygenation", "Persistence", TPPE1.Sequence.Message.MessageTypes.Reply);
-            sequenceDiagram.AddMessage("System identifies situation", "persist", 0.999f, "Persistence", "SQLite", TPPE1.Sequence.Message.MessageTypes.Reply);
-            sequenceDiagram.AddMessage("System identifies situation", "replyPersist", 0.999f, "Persistence", "Oxygenation", TPPE1.Sequence.Message.MessageTypes.Reply);
-            sequenceDiagram.AddMessage("System identifies situation", "replySendSituation(Oxygenation)", 0.999f, "Oxygenation", "Bus", TPPE1.Sequence.Message.MessageTypes.Reply);
-        
-            sequenceDiagram.AddMessage("SQLite Persistence", "persist", 0.999f, "Persistence", "SQLite", TPPE1.Sequence.Message.MessageTypes.Reply);
-            sequenceDiagram.AddMessage("SQLite Persistence", "replyPersist", 0.999f, "SQLite", "Persistence", TPPE1.Sequence.Message.MessageTypes.Reply);
-        
-            sequenceDiagram.AddMessage("Memory Persistence", "persist", 0.999f, "Persistence", "Memory", TPPE1.Sequence.Message.MessageTypes.Reply);
-            sequenceDiagram.AddMessage("Memory Persistence", "replyPersist", 0.999f, "Memory", "Persistence",TPPE1.Sequence.Message.MessageTypes.Reply);
-        
+
+            SequenceDiagram diagramThatWillReceiveMessage = sequenceDiagram.GetDiagram("System identifies situation");
+
+            if (diagramThatWillReceiveMessage != null)
+            {
+                diagramThatWillReceiveMessage.AddMessage("register", 0.999f, "Oxygenation", "Bus", TPPE1.Sequence.Message.MessageTypes.Reply);
+                diagramThatWillReceiveMessage.AddMessage("replyRegister", 0.999f, "Bus", "Oxygenation", TPPE1.Sequence.Message.MessageTypes.Reply);
+                diagramThatWillReceiveMessage.AddMessage("sendSituation", 0.999f, "Oxygenation", "Persistence", TPPE1.Sequence.Message.MessageTypes.Reply);
+                diagramThatWillReceiveMessage.AddMessage("persist", 0.999f, "Persistence", "SQLite", TPPE1.Sequence.Message.MessageTypes.Reply);
+                diagramThatWillReceiveMessage.AddMessage("replyPersist", 0.999f, "Persistence", "Oxygenation", TPPE1.Sequence.Message.MessageTypes.Reply);
+                diagramThatWillReceiveMessage.AddMessage("replySendSituation(Oxygenation)", 0.999f, "Oxygenation", "Bus", TPPE1.Sequence.Message.MessageTypes.Reply);
+
+            }
+
+
+            diagramThatWillReceiveMessage = sequenceDiagram.GetDiagram("SQLite Persistence");
+
+            if (diagramThatWillReceiveMessage != null)
+            {
+
+                diagramThatWillReceiveMessage.AddMessage("persist", 0.999f, "Persistence", "SQLite", TPPE1.Sequence.Message.MessageTypes.Reply);
+                diagramThatWillReceiveMessage.AddMessage("replyPersist", 0.999f, "SQLite", "Persistence", TPPE1.Sequence.Message.MessageTypes.Reply);
+            }
+
+
+            diagramThatWillReceiveMessage = sequenceDiagram.GetDiagram("Memory Persistence");
+
+            if (diagramThatWillReceiveMessage != null)
+            {
+
+                diagramThatWillReceiveMessage.AddMessage("persist", 0.999f, "Persistence", "Memory", TPPE1.Sequence.Message.MessageTypes.Reply);
+                diagramThatWillReceiveMessage.AddMessage("replyPersist", 0.999f, "Memory", "Persistence", TPPE1.Sequence.Message.MessageTypes.Reply);
+            }
+
+     
             Assert.Throws<ActivityRepresentationException>(() => sequenceDiagram.Check());
         }
 

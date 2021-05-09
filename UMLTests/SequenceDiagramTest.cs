@@ -166,7 +166,7 @@ namespace TestProject
 
             Assert.Single(sequenceDiagram.Optionals);
         }
-
+        
         [Fact]
         public void SequenceDiagramTest_AddMessage_MessageFormatExceptionTest()
         {
@@ -179,9 +179,11 @@ namespace TestProject
             SequenceRoot sequenceDiagram = new SequenceRoot(activityDiagram);
             sequenceDiagram.AddDiagram("System identifies situation", true);
 
-            Assert.Throws<MessageFormatException>(() => sequenceDiagram.AddMessage("System identifies situation", "", 0, "", "", TPPE1.Sequence.Message.MessageTypes.Asynchronous));
-        }
+            SequenceDiagram diagramThatWillReceiveMessage = sequenceDiagram.GetDiagram("System identifies situation");
 
+            Assert.Throws<MessageFormatException>(() => diagramThatWillReceiveMessage.AddMessage("", 0, "", "", TPPE1.Sequence.Message.MessageTypes.Asynchronous));
+        }
+        
         [Fact]
         public void SequenceDiagramTest_AddMessage_MessageFormatExceptionTest2()
         {
@@ -194,9 +196,11 @@ namespace TestProject
             SequenceRoot sequenceDiagram = new SequenceRoot(activityDiagram);
             sequenceDiagram.AddDiagram("System identifies situation", true);
 
-            Assert.Throws<MessageFormatException>(() => sequenceDiagram.AddMessage("System identifies situation", "asdad", 0, "", "", TPPE1.Sequence.Message.MessageTypes.Asynchronous));
-        }
+            SequenceDiagram diagramThatWillReceiveMessage = sequenceDiagram.GetDiagram("System identifies situation");
 
+            Assert.Throws<MessageFormatException>(() => diagramThatWillReceiveMessage.AddMessage("asdad", 0, "", "", TPPE1.Sequence.Message.MessageTypes.Asynchronous));
+        }
+        
         [Fact]
         public void SequenceDiagramTest_AddMessage_MessageFormatExceptionTest3()
         {
@@ -209,9 +213,11 @@ namespace TestProject
             SequenceRoot sequenceDiagram = new SequenceRoot(activityDiagram);
             sequenceDiagram.AddDiagram("System identifies situation", true);
 
-            Assert.Throws<MessageFormatException>(() => sequenceDiagram.AddMessage("System identifies situation", "", 0, "asdad", "", TPPE1.Sequence.Message.MessageTypes.Asynchronous));
-        }
+            SequenceDiagram diagramThatWillReceiveMessage = sequenceDiagram.GetDiagram("System identifies situation");
 
+            Assert.Throws<MessageFormatException>(() => diagramThatWillReceiveMessage.AddMessage("", 0, "asdad", "", TPPE1.Sequence.Message.MessageTypes.Asynchronous));
+        }
+        
         [Fact]
         public void SequenceDiagramTest_AddMessage_MessageFormatExceptionTest4()
         {
@@ -226,9 +232,11 @@ namespace TestProject
             sequenceDiagram.AddOptional("[SQLite]", "System identifies situation");
             sequenceDiagram.AddOptional("[Memory]", "System identifies situation");
 
-            Assert.Throws<MessageFormatException>(() => sequenceDiagram.AddMessage("System identifies situation", "asdad", 0.1f, "[SQLite]", "[Memory]", TPPE1.Sequence.Message.MessageTypes.Asynchronous));
-        }
+            SequenceDiagram diagramThatWillReceiveMessage = sequenceDiagram.GetDiagram("System identifies situation");
 
+            Assert.Throws<MessageFormatException>(() => diagramThatWillReceiveMessage.AddMessage("asdad", 0.1f, "[SQLite]", "[Memory]", TPPE1.Sequence.Message.MessageTypes.Asynchronous));
+        }
+       
         [Fact]
         public void SequenceDiagram_AddLifelines()
         {
@@ -341,7 +349,7 @@ namespace TestProject
             Assert.Equal(sequenceDiagram.GetLifeline("Bus").Name, sequenceDiagram.Lifelines[0].Name);
             Assert.Equal(sequenceDiagram.GetLifeline("Test").Name, sequenceDiagram.Lifelines[1].Name);
         }
-
+        
         [Fact]
         public void SequenceDiagram_Xml()
         {
@@ -367,23 +375,30 @@ namespace TestProject
 
             sequenceDiagram.AddOptional("[SQLite]", "System identifies situation");
             sequenceDiagram.AddOptional("[Memory]", "System identifies situation");
+            
+            SequenceDiagram diagramThatWillReceiveMessage = sequenceDiagram.GetDiagram("System identifies situation");
 
-            sequenceDiagram.AddMessage("System identifies situation", "register", 0.999f, "Oxygenation", "Bus", TPPE1.Sequence.Message.MessageTypes.Reply);
-            sequenceDiagram.AddMessage("System identifies situation", "replyRegister", 0.999f, "Bus", "Oxygenation", TPPE1.Sequence.Message.MessageTypes.Reply);
-            sequenceDiagram.AddMessage("System identifies situation", "sendSituation", 0.999f, "Oxygenation", "Persistence", TPPE1.Sequence.Message.MessageTypes.Reply);
-            sequenceDiagram.AddMessage("System identifies situation", "persist", 0.999f, "Persistence", "SQLite", TPPE1.Sequence.Message.MessageTypes.Reply);
-            sequenceDiagram.AddMessage("System identifies situation", "replyPersist", 0.999f, "Persistence", "Oxygenation", TPPE1.Sequence.Message.MessageTypes.Reply);
-            sequenceDiagram.AddMessage("System identifies situation", "replySendSituation(Oxygenation)", 0.999f, "Oxygenation", "Bus", TPPE1.Sequence.Message.MessageTypes.Reply);
+            diagramThatWillReceiveMessage.AddMessage("register", 0.999f, "Oxygenation", "Bus", TPPE1.Sequence.Message.MessageTypes.Reply);
+            diagramThatWillReceiveMessage.AddMessage("replyRegister", 0.999f, "Bus", "Oxygenation", TPPE1.Sequence.Message.MessageTypes.Reply);
+            diagramThatWillReceiveMessage.AddMessage("sendSituation", 0.999f, "Oxygenation", "Persistence", TPPE1.Sequence.Message.MessageTypes.Reply);
+            diagramThatWillReceiveMessage.AddMessage("persist", 0.999f, "Persistence", "SQLite", TPPE1.Sequence.Message.MessageTypes.Reply);
+            diagramThatWillReceiveMessage.AddMessage("replyPersist", 0.999f, "Persistence", "Oxygenation", TPPE1.Sequence.Message.MessageTypes.Reply);
+            diagramThatWillReceiveMessage.AddMessage("replySendSituation(Oxygenation)", 0.999f, "Oxygenation", "Bus", TPPE1.Sequence.Message.MessageTypes.Reply);
 
-            sequenceDiagram.AddMessage("SQLite Persistence", "persist", 0.999f, "Persistence", "SQLite", TPPE1.Sequence.Message.MessageTypes.Reply);
-            sequenceDiagram.AddMessage("SQLite Persistence", "replyPersist", 0.999f, "SQLite", "Persistence", TPPE1.Sequence.Message.MessageTypes.Reply);
+            diagramThatWillReceiveMessage = sequenceDiagram.GetDiagram("SQLite Persistence");
 
-            sequenceDiagram.AddMessage("Memory Persistence", "persist", 0.999f, "Persistence", "Memory", TPPE1.Sequence.Message.MessageTypes.Reply);
-            sequenceDiagram.AddMessage("Memory Persistence", "replyPersist", 0.999f, "Memory", "Persistence", TPPE1.Sequence.Message.MessageTypes.Reply);
+            diagramThatWillReceiveMessage.AddMessage("persist", 0.999f, "Persistence", "SQLite", TPPE1.Sequence.Message.MessageTypes.Reply);
+            diagramThatWillReceiveMessage.AddMessage("replyPersist", 0.999f, "SQLite", "Persistence", TPPE1.Sequence.Message.MessageTypes.Reply);
 
+            diagramThatWillReceiveMessage = sequenceDiagram.GetDiagram("Memory Persistence");
+
+            diagramThatWillReceiveMessage.AddMessage("persist", 0.999f, "Persistence", "Memory", TPPE1.Sequence.Message.MessageTypes.Reply);
+            diagramThatWillReceiveMessage.AddMessage("replyPersist", 0.999f, "Memory", "Persistence", TPPE1.Sequence.Message.MessageTypes.Reply);
+           
             var xmlFinal = "<SequenceDiagrams>\n\t<Lifelines>\n\t\t<Lifeline name=\"Bus\"/>\n\t\t<Lifeline name=\"Oxygenation\"/>\n\t\t<Lifeline name=\"Persistence\"/>\n\t\t<Lifeline name=\"SQLite\"/>\n\t\t<Lifeline name=\"Memory\"/>\n\t</Lifelines>\n\t<Fragments>\n\t\t<Optional name=\"[SQLite]\" representedBy=\"System identifies situation\"/>\n\t\t<Optional name=\"[Memory]\" representedBy=\"System identifies situation\"/>\n\t</Fragments>\n\t<SequenceDiagram name=\"System identifies situation\">\n\t\t<Message name=\"register\" prob=\"0.999\" source=\"Oxygenation\" target=\"Bus\"/>\n\t\t<Message name=\"replyRegister\" prob=\"0.999\" source=\"Bus\" target=\"Oxygenation\"/>\n\t\t<Message name=\"sendSituation\" prob=\"0.999\" source=\"Oxygenation\" target=\"Persistence\"/>\n\t\t<Message name=\"persist\" prob=\"0.999\" source=\"Persistence\" target=\"SQLite\"/>\n\t\t<Message name=\"replyPersist\" prob=\"0.999\" source=\"Persistence\" target=\"Oxygenation\"/>\n\t\t<Message name=\"replySendSituation(Oxygenation)\" prob=\"0.999\" source=\"Oxygenation\" target=\"Bus\"/>\n\t</SequenceDiagram>\n\t<SequenceDiagram name=\"SQLite Persistence\">\n\t\t<Message name=\"persist\" prob=\"0.999\" source=\"Persistence\" target=\"SQLite\"/>\n\t\t<Message name=\"replyPersist\" prob=\"0.999\" source=\"SQLite\" target=\"Persistence\"/>\n\t</SequenceDiagram>\n\t<SequenceDiagram name=\"Memory Persistence\">\n\t\t<Message name=\"persist\" prob=\"0.999\" source=\"Persistence\" target=\"Memory\"/>\n\t\t<Message name=\"replyPersist\" prob=\"0.999\" source=\"Memory\" target=\"Persistence\"/>\n\t</SequenceDiagram>\n</SequenceDiagrams>\n";
 
             Assert.Equal(xmlFinal, sequenceDiagram.ToString());
         }
+        
     }
 }
