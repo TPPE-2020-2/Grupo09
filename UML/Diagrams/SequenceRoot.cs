@@ -12,11 +12,11 @@ namespace TPPE1.Diagrams
     {
         public ActivityDiagram ActivityDiagram { get; set; }
 
-        public List<Lifeline> Lifelines { get; set; }
+        public LifelineList Lifelines { get; set; }
         public List<Fragment> Fragments { get; set; }
-        public List<Optional> Optionals { get; set; }
+        public OptionalList Optionals { get; set; }
 
-        public Dictionary<string, SequenceDiagram> Diagrams { get; set; }
+        public SequenceDiagramDict Diagrams { get; set; }
 
         private SequenceRoot()
         {
@@ -34,7 +34,7 @@ namespace TPPE1.Diagrams
                 throw new ActivityDiagramRuleException();
 
             if (Lifelines == null)
-                Lifelines = new List<Lifeline>();
+                Lifelines = new LifelineList();
 
             Lifelines.Add(new Lifeline()
             {
@@ -67,7 +67,7 @@ namespace TPPE1.Diagrams
                 throw new Exception();
 
             if (Diagrams == null)
-                Diagrams = new Dictionary<string, SequenceDiagram>();
+                Diagrams = new SequenceDiagramDict();
 
             var activity = ActivityDiagram.GetDiagramElement(name, ActivityDiagramElements.ElementTypes.Activity);
             if (activity == null)
@@ -97,7 +97,7 @@ namespace TPPE1.Diagrams
                 throw new EmptyOptionalFragment();
 
             if (Optionals == null)
-                Optionals = new List<Optional>();
+                Optionals = new OptionalList();
 
             var sequenceDiagram = GetDiagram(diagram);
             if (sequenceDiagram == null)
@@ -140,44 +140,11 @@ namespace TPPE1.Diagrams
 
             xml = $"<SequenceDiagrams>\n";
 
-            if (Lifelines != null && Lifelines.Count > 0)
-            {
-                xml += $"\t<Lifelines>\n";
+            xml += Lifelines.ToString();
 
-                foreach (var lifelines in Lifelines)
-                {
-                    xml += $"\t\t<{lifelines.ElementType} name=\"{lifelines.Name}\"/>\n";
-                }
+            xml += Optionals.ToString();
 
-                xml += $"\t</Lifelines>\n";
-            }
-
-            if (Optionals != null && Optionals.Count > 0)
-            {
-                xml += $"\t<Fragments>\n";
-
-                foreach (var optional in Optionals)
-                {
-                    xml += $"\t\t<{optional.ElementType} name=\"{optional.Name}\" representedBy=\"{optional.RepresentedBy.Name}\"/>\n";
-                }
-
-                xml += $"\t</Fragments>\n";
-            }
-
-            if (Diagrams != null && Diagrams.Count > 0)
-            {
-                foreach (var diagram in Diagrams)
-                {
-                    xml += $"\t<SequenceDiagram name=\"{diagram.Key}\">\n";
-
-                    foreach (var message in diagram.Value.Messages)
-                    {
-                        xml += $"\t\t<{message.ElementType} name=\"{message.Name}\" prob=\"{message.Prob}\" source=\"{message.Source.Name}\" target=\"{message.Target.Name}\"/>\n";
-                    }
-
-                    xml += $"\t</SequenceDiagram>\n";
-                }
-            }
+            xml += Diagrams.ToString();
 
             xml += $"</SequenceDiagrams>\n";
 

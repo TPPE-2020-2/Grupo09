@@ -10,7 +10,7 @@ namespace TPPE1.Diagrams
         public bool GuardCondition { get; set; }
         public string Name { get; set; }
         public SequenceRoot SequenceRoot { get; set; }
-        public List<Message> Messages { get; set; }
+        public MessageList Messages { get; set; }
 
         private SequenceDiagram()
         {
@@ -43,7 +43,7 @@ namespace TPPE1.Diagrams
                 throw new MessageFormatException();
 
             if (Messages == null)
-                Messages = new List<Message>();
+                Messages = new MessageList();
 
             Messages.Add(new Message()
             {
@@ -53,6 +53,34 @@ namespace TPPE1.Diagrams
                 Target = lifeLineTarget,
                 Type = messageType
             });
+        }
+
+        public override string ToString()
+        {
+            var content = $"\t<SequenceDiagram name=\"{Name}\">\n";
+
+            content += Messages?.ToString();
+
+            content += $"\t</SequenceDiagram>\n";
+
+            return content;
+        }
+    }
+
+    public class SequenceDiagramDict : Dictionary<string, SequenceDiagram>
+    {
+        public override string ToString()
+        {
+            if (Count == 0)
+                return null;
+
+            var content = "";
+            foreach (var diagram in this)
+            {
+                content += diagram.Value;
+            }
+
+            return content;
         }
     }
 }
