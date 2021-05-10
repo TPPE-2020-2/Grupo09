@@ -14,10 +14,7 @@ namespace TPPE1.Elements
         public List<KeyValuePair<string, ActivityDiagramElements>> DiagramElements { get; set; }
         public List<KeyValuePair<string, Transition>> Transitions { get; set; }
 
-        private ActivityDiagram()
-        {
-
-        }
+        private ActivityDiagram() { }
 
         public ActivityDiagram(string name, bool duplicate)
         {
@@ -25,25 +22,82 @@ namespace TPPE1.Elements
             AcceptDuplicate = duplicate;
         }
 
-        public ActivityDiagramElements GetDiagramElement(string name, ActivityDiagramElements.ElementTypes type = ActivityDiagramElements.ElementTypes.None)
+        private bool CheckDiagramElementsIsValid()
         {
-            if (DiagramElements == null)
-                return null;
+            return (DiagramElements != null);
+        }
+
+        private bool CheckTransitionIsValid()
+        {
+            return (Transitions != null) ? true : false;
+        }
+
+        private void ThrowDiagramElementsInvalid()
+        {
+            if (!CheckDiagramElementsIsValid())
+            {
+                throw new ActivityDiagramRuleException();
+            }
+        }
+
+        private void ThrowInvalidInputGetElement(string name, ActivityDiagramElements.ElementTypes type)
+        {
+            if (string.IsNullOrEmpty(name) && type == ActivityDiagramElements.ElementTypes.None)
+                throw new ArgumentOutOfRangeException();
+        }
+
+        private void ThrowDiagramElementsIsCreated()
+        {
+            if (CheckDiagramElementsIsValid())
+            {
+                throw new ActivityDiagramRuleException();
+            }
+        }
+
+        private void ThrowDiagramNameIsInvalid(string node)
+        {
+            if (string.IsNullOrEmpty(node))
+                throw new Exception();
+        }
+
+        private void ThrowTransitionIsInvalid()
+        {
+            if (!CheckTransitionIsValid())
+                throw new Exception();
+        }
+
+        private bool CompareElementType(ActivityDiagramElements.ElementTypes a, ActivityDiagramElements.ElementTypes b)
+        {
+            return (a == b);
+        }
+
+        private bool CompareName(string a, string b)
+        {
+            return (a == b);
+        }
+
+        public ActivityDiagramElements GetDiagramElement(string name = "", ActivityDiagramElements.ElementTypes type = ActivityDiagramElements.ElementTypes.None)
+        {
+            ThrowDiagramElementsInvalid();
+            ThrowInvalidInputGetElement(name, type);
+
+            bool compareName = !string.IsNullOrEmpty(name);
 
             foreach (var element in DiagramElements)
             {
-                if (element.Key == name)
+                if (compareName)
                 {
-                    if (type == ActivityDiagramElements.ElementTypes.None)
+                    if (CompareName(element.Key, name) && (CompareElementType(type, ActivityDiagramElements.ElementTypes.None) ||
+                        CompareElementType(type, element.Value.ElementType)))
                     {
                         return element.Value;
                     }
-                    else
+                }
+                else
+                {
+                    if (CompareElementType(type, element.Value.ElementType))
                     {
-                        if (type == element.Value.ElementType)
-                        {
-                            return element.Value;
-                        }
+                        return element.Value;
                     }
                 }
             }
@@ -53,142 +107,91 @@ namespace TPPE1.Elements
 
         public ActivityDiagramElements GetDiagramElement(ActivityDiagramElements.ElementTypes type)
         {
-            if (DiagramElements == null)
-                return null;
+            return GetDiagramElement("", type);
+        }
 
-            foreach (var element in DiagramElements)
+        private void AddNode(ActivityDiagramElements.ElementTypes type, string name)
+        {
+            if (!AcceptDuplicate)
             {
-                if (type == element.Value.ElementType)
+                if (GetDiagramElement(name, type) != null)
                 {
-                    return element.Value;
+                    throw new Exception();
                 }
             }
+            ActivityDiagramElements node = default;
+            node = type switch
+            {
+                ActivityDiagramElements.ElementTypes.StartNode => new StartNode { Name = name },
+                ActivityDiagramElements.ElementTypes.Activity => new ActivityNode { Name = name },
+                ActivityDiagramElements.ElementTypes.DecisionNode => new DecisionNode { Name = name },
+                ActivityDiagramElements.ElementTypes.MergeNode => new MergeNode { Name = name },
+                ActivityDiagramElements.ElementTypes.FinalNode => new FinalNode { Name = name },
+                _ => throw new ArgumentOutOfRangeException(),
+            };
 
-            return null;
+            DiagramElements.Add(new KeyValuePair<string, ActivityDiagramElements>(name, node));
         }
 
         public void AddStartNode(string name)
         {
-            if (string.IsNullOrEmpty(name))
-                throw new Exception();
+            ValidateNameAndElements(name, true);
 
-            if (DiagramElements != null)
-                throw new Exception();
+            DiagramElements = new List<KeyValuePair<string, ActivityDiagramElements>>();
 
-            DiagramElements = new List<KeyValuePair<string, ActivityDiagramElements>>
-            {
-                new KeyValuePair<string, ActivityDiagramElements>(name,
-                new StartNode
-                {
-                    Name = name
-                })
-            };
+            AddNode(ActivityDiagramElements.ElementTypes.StartNode, name);
         }
 
         public void AddActivityNode(string name)
         {
-            if (string.IsNullOrEmpty(name))
-                throw new Exception();
+            ValidateNameAndElements(name);
 
-            if (DiagramElements == null)
-                throw new ActivityDiagramRuleException();
-
-            if (!AcceptDuplicate)
-            {
-                if (GetDiagramElement(name, ActivityDiagramElements.ElementTypes.Activity) != null)
-                {
-                    throw new Exception();
-                }
-            }
-
-            DiagramElements.Add(new KeyValuePair<string, ActivityDiagramElements>(name,
-                        new ActivityNode
-                        {
-                            Name = name
-                        })
-                    );
+            AddNode(ActivityDiagramElements.ElementTypes.Activity, name);
         }
 
         public void AddDecisionNode(string name)
         {
-            if (string.IsNullOrEmpty(name))
-                throw new Exception();
+            ValidateNameAndElements(name);
 
-            if (DiagramElements == null)
-                throw new ActivityDiagramRuleException();
-
-            if (!AcceptDuplicate)
-            {
-                if (GetDiagramElement(name, ActivityDiagramElements.ElementTypes.DecisionNode) != null)
-                {
-                    throw new Exception();
-                }
-            }
-
-            DiagramElements.Add(new KeyValuePair<string, ActivityDiagramElements>(name,
-                    new DecisionNode
-                    {
-                        Name = name
-                    })
-                );
+            AddNode(ActivityDiagramElements.ElementTypes.DecisionNode, name);
         }
 
         public void AddMergeNode(string name)
         {
-            if (string.IsNullOrEmpty(name))
-                throw new Exception();
+            ValidateNameAndElements(name);
 
-            if (DiagramElements == null)
-                throw new ActivityDiagramRuleException();
+            AddNode(ActivityDiagramElements.ElementTypes.MergeNode, name);
+        }
 
-            if (!AcceptDuplicate)
+        private void ValidateNameAndElements(string name, bool checkDiagramCreated = false)
+        {
+            ThrowDiagramNameIsInvalid(name);
+
+            if (checkDiagramCreated)
             {
-                if (GetDiagramElement(name, ActivityDiagramElements.ElementTypes.MergeNode) != null)
-                {
-                    throw new Exception();
-                }
+                ThrowDiagramElementsIsCreated();
             }
-
-            DiagramElements.Add(new KeyValuePair<string, ActivityDiagramElements>(name,
-                    new MergeNode
-                    {
-                        Name = name
-                    })
-                );
+            else
+            {
+                ThrowDiagramElementsInvalid();
+            }
         }
 
         public void AddFinalNode(string name)
         {
-            if (string.IsNullOrEmpty(name))
-                throw new Exception();
+            ValidateNameAndElements(name);
 
-            if (DiagramElements == null)
-                throw new ActivityDiagramRuleException();
-
-            if (!AcceptDuplicate)
-            {
-                if (GetDiagramElement(name, ActivityDiagramElements.ElementTypes.FinalNode) != null)
-                {
-                    throw new Exception();
-                }
-            }
-
-            DiagramElements.Add(new KeyValuePair<string, ActivityDiagramElements>(name,
-                    new FinalNode
-                    {
-                        Name = name
-                    })
-                );
+            AddNode(ActivityDiagramElements.ElementTypes.FinalNode, name);
         }
 
         public Transition GetTransition(string name)
         {
-            if (Transitions == null)
-                return null;
+            ThrowDiagramNameIsInvalid(name);
+            ThrowTransitionIsInvalid();
 
             foreach (var element in Transitions)
             {
-                if (element.Key == name)
+                if (CompareName(element.Key, name))
                 {
                     return element.Value;
                 }
@@ -197,14 +200,8 @@ namespace TPPE1.Elements
             return null;
         }
 
-        public void AddTransition(string name, float prob)
+        private void TryAddTranstion(string name, float prob)
         {
-            if(string.IsNullOrEmpty(name))
-                throw new Exception();
-
-            if (Transitions == null)
-                Transitions = new List<KeyValuePair<string, Transition>>();
-
             if (!AcceptDuplicate)
             {
                 if (GetTransition(name) != null)
@@ -218,6 +215,18 @@ namespace TPPE1.Elements
                         Prob = prob
                     })
                 );
+        }
+
+        public void AddTransition(string name, float prob)
+        {
+            ThrowDiagramNameIsInvalid(name);
+
+            if (!CheckTransitionIsValid())
+            {
+                Transitions = new List<KeyValuePair<string, Transition>>();
+            }
+
+            TryAddTranstion(name, prob);
         }
 
         public bool Check()
@@ -241,7 +250,6 @@ namespace TPPE1.Elements
             string xml = string.Empty;
 
             xml = $"<ActivityDiagram name=\"{Name}\">\n";
-
             if (DiagramElements != null && DiagramElements.Count > 0)
             {
                 xml += $"\t<ActivityDiagramElements>\n";
