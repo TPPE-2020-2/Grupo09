@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using TPPE1.Exceptions;
+using UML.Diagrams;
 
 namespace TPPE1.Elements
 {
@@ -247,36 +248,10 @@ namespace TPPE1.Elements
         {
             Check();
 
-            string xml = string.Empty;
+            var exporter = new ExporterDiagram(Name, DiagramElements, Transitions);
+            exporter.Export();
 
-            xml = $"<ActivityDiagram name=\"{Name}\">\n";
-            if (DiagramElements != null && DiagramElements.Count > 0)
-            {
-                xml += $"\t<ActivityDiagramElements>\n";
-
-                foreach (var element in DiagramElements)
-                {
-                    xml += $"\t\t<{element.Value.ElementType} name=\"{element.Value.Name}\"/>\n";
-                }
-
-                xml += $"\t</ActivityDiagramElements>\n";
-            }
-
-            if (Transitions != null && Transitions.Count > 0)
-            {
-                xml += $"\t<ActivityDiagramTransitions>\n";
-
-                foreach (var transition in Transitions)
-                {
-                    xml += $"\t\t<Transition name=\"{transition.Value.Name}\" prob=\"{transition.Value.Prob}\"/>\n";
-                }
-
-                xml += $"\t</ActivityDiagramTransitions>\n";
-            }
-
-            xml += $"</ActivityDiagram>\n";
-
-            return xml;
+            return exporter.Data;
         }
     }
 }
