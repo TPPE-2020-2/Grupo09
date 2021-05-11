@@ -15,6 +15,30 @@ Marco Antônio | 16/0135681
 ### Dependências
 
 - [.NET 5.0 (SDK e Runtime)](https://dotnet.microsoft.com/download/dotnet/5.0)
+- Existe instruções de instalação dependendo do sistema operacional:
+  - [Windows](https://docs.microsoft.com/pt-br/dotnet/core/install/windows?tabs=net50)
+  - [Linux](https://docs.microsoft.com/pt-br/dotnet/core/install/linux) 
+    - [Ubuntu](https://docs.microsoft.com/pt-br/dotnet/core/install/linux-ubuntu)
+    - [Debian](https://docs.microsoft.com/pt-br/dotnet/core/install/linux-debian)
+    - Existe outras distribuições no link acima.
+  - [MacOS](https://docs.microsoft.com/pt-br/dotnet/core/install/macos)
+
+### Instalação no Ubuntu
+A instalação é feita através do Snap rodando os seguintes comandos:
+- SDK:
+  ```
+  sudo snap install dotnet-sdk --classic --channel=5.0
+  ```
+  ```
+  sudo snap alias dotnet-sdk.dotnet dotnet
+  ```
+- Runtime:
+  ```
+  sudo snap install dotnet-runtime-50 --classic
+  ```
+  ```
+  sudo snap alias dotnet-runtime-50.dotnet dotnet
+  ```
 
 ### Execução
 
@@ -23,7 +47,8 @@ Marco Antônio | 16/0135681
 - Para realizar a build do projeto, é necessário rodar os seguintes comandos:
 ```
 dotnet restore ./UML/UML.csproj
-
+```
+```
 dotnet publish ./UML/UML.csproj -c Release
 ```
 
