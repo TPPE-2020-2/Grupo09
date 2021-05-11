@@ -10,11 +10,11 @@ Lucas Gomes | 16/0133505
 Marco Antônio | 16/0135681
 
 ## Executar o projeto
-- É recomendável utilizar a IDE Visual Studio com o SDK e Runtime instalados ou pelo menos estar usando o sistema operacional Windows para uma execução mais fácil do projeto. Caso não seja possível, os passos abaixo serão para executar o projeto através do terminal.
+- É recomendável utilizar a IDE Visual Studio com o SDK instalado ou pelo menos estar usando o sistema operacional Windows para uma execução mais fácil do projeto. Caso não seja possível, os passos abaixo serão para executar o projeto através do terminal.
 
 ### Dependências
 
-- [.NET 5.0 (SDK e Runtime)](https://dotnet.microsoft.com/download/dotnet/5.0)
+- [SDK do .NET 5.0](https://dotnet.microsoft.com/download/dotnet/5.0)
 - Existe instruções de instalação dependendo do sistema operacional:
   - [Windows](https://docs.microsoft.com/pt-br/dotnet/core/install/windows?tabs=net50)
   - [Linux](https://docs.microsoft.com/pt-br/dotnet/core/install/linux) 
@@ -31,13 +31,6 @@ A instalação é feita através do Snap rodando os seguintes comandos:
   ```
   ```
   sudo snap alias dotnet-sdk.dotnet dotnet
-  ```
-- Runtime:
-  ```
-  sudo snap install dotnet-runtime-50 --classic
-  ```
-  ```
-  sudo snap alias dotnet-runtime-50.dotnet dotnet
   ```
 
 ### Execução
