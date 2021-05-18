@@ -1,0 +1,18 @@
+Critérios de avaliação:
+-----------------------
+O programa não oferece ao usuario uma interação para criar os diagramas, embora
+simule a criação de diagramas de uma SPL. Exceções do enunciado foram
+criadas/lançadas e tratadas adequadamente. Não foram implementados testes
+parametrizados. Testes de exceção foram implementados. 
+
+
+O programa funciona como deveria (30 %)?  15 pontos.
+
+Testes parametrizados foram implementados (20%) ? 0 pontos. 
+
+Classes de exceções foram implementadas? Excecoes foram lançadas e tratadas?
+Testes de excecoes foram implementados? (- 10% para cada exceção não
+implementada adequadamente, limitado a 50% da nota):  50 pontos. 
+
+
+NOTA FINAL: 65 pontos.
