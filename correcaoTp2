@@ -1,0 +1,27 @@
+Observações:
+------------
+
+O intuito da refatoração *Substituir condicional por polimorrfismo* é
+exatamente não ter expressões condicionais para variação comportamental. Nâo é
+o caso da refatoração apresentada. As condicionais persistem no código
+apresentado. 
+
+Na refatoração `Substituir método por método-objeto` os elementos que
+permaneceram em `ActivityDiagram` devem ser acessados via referência `source`.
+Não há uma referência para a classe de origem. Além disso, a refatoração deve
+ser aplicada em um método apenas, o que não é o caso aqui: vários métodos foram
+trazidos para o método-objeto. 
+
+Critérios de avaliação:
+-----------------------
+
+Ref. 1 - mover método ou mover atributo (20 pontos): Ok - 20 pontos. 
+
+Ref. 2 - extrair método (20 pontos): Ok - 20 pontos. 
+
+Ref. 3 - substituir método por objeto-método (30 pontos): +/-, 15 pontos.
+
+Ref. 4 - substituir condicional por polimorfismo (30 pontos): NOk - 0 pontos.
+
+
+NOTA FINAL: 55 pontos.
